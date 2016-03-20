@@ -1,0 +1,36 @@
+@(events: Seq[models.Tables.EventRow])
+
+@main("イベント一覧") {
+    <div>
+        <a href="@routes.EventController.edit()" role="button" class="btn btn-success">新規作成</a>
+    </div>
+
+    <div class="col-xs-6">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>会社名</th>
+                    <th>種類</th>
+                    <th>詳細</th>
+                    <th>open</th>
+                    <th>close</th>
+                    <th>done</th>
+                </tr>
+            </thead>
+            <tbody>
+            @events.map { event =>
+                <tr>
+                    <td>@event.eventid</td>
+                    <td>@event.companyid</td>
+                    <td>@event.typeid</td>
+                    <td>@event.description<td>
+                    <td>@event.opendate<td>
+                    <td>@event.closedate</td>
+                    <td>@event.isclose<td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
