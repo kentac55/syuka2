@@ -61,3 +61,22 @@ class EventController @Inject()(val dbConfigProvider: DatabaseConfigProvider,
     */
   def remove(id: Long) = TODO
 }
+
+//object EventController {
+//  case class EventForm(
+//                        eventid: Option[Int],
+//                        companyid: Int,
+//                        typeid: Int,
+//                        description: Option[String],
+//                        opendate: Option[java.sql.Timestamp],
+//                        closeDate: Option[java.sql.Timestamp],
+//                        isclose: Option[Boolean]
+//                      )
+//
+//  val eventForm = Form(
+//    mapping(
+//      "eventid"       -> optional(longNumber),
+//      "companyid"          -> nonEmptyText()
+//    )(EventForm.apply)(EventForm.unapply)
+//  )
+//}
