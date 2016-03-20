@@ -19,15 +19,15 @@ trait Tables {
   def ddl = schema
 
   /** Entity class storing rows of table Company
-    *  @param companyid Database column COMPANYID SqlType(INTEGER), PrimaryKey
-    *  @param companyname Database column COMPANYNAME SqlType(VARCHAR)
-    *  @param location Database column LOCATION SqlType(VARCHAR)
-    *  @param etc Database column ETC SqlType(VARCHAR) */
+   *  @param companyid Database column COMPANYID SqlType(INTEGER), PrimaryKey
+   *  @param companyname Database column COMPANYNAME SqlType(VARCHAR)
+   *  @param location Database column LOCATION SqlType(VARCHAR)
+   *  @param etc Database column ETC SqlType(VARCHAR) */
   case class CompanyRow(companyid: Int, companyname: Option[String], location: Option[String], etc: Option[String])
   /** GetResult implicit for fetching CompanyRow objects using plain SQL queries */
   implicit def GetResultCompanyRow(implicit e0: GR[Int], e1: GR[Option[String]]): GR[CompanyRow] = GR{
     prs => import prs._
-      CompanyRow.tupled((<<[Int], <<?[String], <<?[String], <<?[String]))
+    CompanyRow.tupled((<<[Int], <<?[String], <<?[String], <<?[String]))
   }
   /** Table description of table COMPANY. Objects of this class serve as prototypes for rows in queries. */
   class Company(_tableTag: Tag) extends Table[CompanyRow](_tableTag, "COMPANY") {
@@ -48,18 +48,18 @@ trait Tables {
   lazy val Company = new TableQuery(tag => new Company(tag))
 
   /** Entity class storing rows of table Event
-    *  @param eventid Database column EVENTID SqlType(INTEGER), PrimaryKey
-    *  @param companyid Database column COMPANYID SqlType(INTEGER)
-    *  @param typeid Database column TYPEID SqlType(INTEGER)
-    *  @param description Database column DESCRIPTION SqlType(VARCHAR)
-    *  @param opendate Database column OPENDATE SqlType(TIMESTAMP)
-    *  @param closedate Database column CLOSEDATE SqlType(TIMESTAMP)
-    *  @param isclose Database column ISCLOSE SqlType(BOOLEAN) */
+   *  @param eventid Database column EVENTID SqlType(INTEGER), PrimaryKey
+   *  @param companyid Database column COMPANYID SqlType(INTEGER)
+   *  @param typeid Database column TYPEID SqlType(INTEGER)
+   *  @param description Database column DESCRIPTION SqlType(VARCHAR)
+   *  @param opendate Database column OPENDATE SqlType(TIMESTAMP)
+   *  @param closedate Database column CLOSEDATE SqlType(TIMESTAMP)
+   *  @param isclose Database column ISCLOSE SqlType(BOOLEAN) */
   case class EventRow(eventid: Int, companyid: Option[Int], typeid: Option[Int], description: Option[String], opendate: Option[java.sql.Timestamp], closedate: Option[java.sql.Timestamp], isclose: Option[Boolean])
   /** GetResult implicit for fetching EventRow objects using plain SQL queries */
   implicit def GetResultEventRow(implicit e0: GR[Int], e1: GR[Option[Int]], e2: GR[Option[String]], e3: GR[Option[java.sql.Timestamp]], e4: GR[Option[Boolean]]): GR[EventRow] = GR{
     prs => import prs._
-      EventRow.tupled((<<[Int], <<?[Int], <<?[Int], <<?[String], <<?[java.sql.Timestamp], <<?[java.sql.Timestamp], <<?[Boolean]))
+    EventRow.tupled((<<[Int], <<?[Int], <<?[Int], <<?[String], <<?[java.sql.Timestamp], <<?[java.sql.Timestamp], <<?[Boolean]))
   }
   /** Table description of table EVENT. Objects of this class serve as prototypes for rows in queries. */
   class Event(_tableTag: Tag) extends Table[EventRow](_tableTag, "EVENT") {
@@ -86,13 +86,13 @@ trait Tables {
   lazy val Event = new TableQuery(tag => new Event(tag))
 
   /** Entity class storing rows of table Type
-    *  @param typeid Database column TYPEID SqlType(INTEGER), PrimaryKey
-    *  @param typename Database column TYPENAME SqlType(VARCHAR) */
+   *  @param typeid Database column TYPEID SqlType(INTEGER), PrimaryKey
+   *  @param typename Database column TYPENAME SqlType(VARCHAR) */
   case class TypeRow(typeid: Int, typename: Option[String])
   /** GetResult implicit for fetching TypeRow objects using plain SQL queries */
   implicit def GetResultTypeRow(implicit e0: GR[Int], e1: GR[Option[String]]): GR[TypeRow] = GR{
     prs => import prs._
-      TypeRow.tupled((<<[Int], <<?[String]))
+    TypeRow.tupled((<<[Int], <<?[String]))
   }
   /** Table description of table TYPE. Objects of this class serve as prototypes for rows in queries. */
   class Type(_tableTag: Tag) extends Table[TypeRow](_tableTag, "TYPE") {
