@@ -13,13 +13,15 @@ import play.api.db.slick._
 import slick.driver.JdbcProfile
 import models.Tables._
 import javax.inject._
-
-import com.google.inject.{AbstractModule, Guice}
-import play.api.inject.Injector
-
-import scala.concurrent.Future
 import slick.driver.H2Driver.api._
+import org.joda.time.DateTime
+import java.sql.Timestamp
+import play.api.data.format.Formats._
+import scala.concurrent.Future
 
+import EventController._
+
+// TODO - シングルトンってなんぞや（アノテーション取っても動くんだけど!?）
 @Singleton()
 class EventController @Inject()(val dbConfigProvider: DatabaseConfigProvider,
                                  val messagesApi: MessagesApi) extends Controller
@@ -37,10 +39,40 @@ class EventController @Inject()(val dbConfigProvider: DatabaseConfigProvider,
 
   /**
     * 編集画面表示
-    * @param id
+    * @param eventID
     * @return
     */
-  def edit(id: Option[Long]) = TODO
+  def edit(eventID: Option[Long]) = Action.async { implicit rs =>
+    val form = if(eventID.isDefined) {
+      // _.eventidはint, eventIDはLong 型を揃える必要がある
+      // eventID.get を使っているのはeventID.isDefinedでNoneではないことが確定している為
+      db.run(Event.filter(_.eventid === eventID.get.toInt.bind).result.head).map { event =>
+        eventForm.fill(EventForm(
+          Some(event.eventid),
+          event.companyid,
+          event.typeid,
+          // TODO - ここmodels.TableによるとoptionだからSome()にすべきなんだけど何故か動く
+          event.description,
+          // java.sql.timestampをjodaへ
+          sqlTimestampToDateTime(event.createdate),
+          sqlTimestampToDateTime(event.duedate),
+          event.ready,
+          event.redume,
+          event.es
+        ))
+      }
+    } else {
+      Future { eventForm }
+    }
+    // futureを2回以上mapする時は最後のmap以外flatMap
+    form.flatMap { form =>
+      db.run(Company.sortBy(_.companyid).result).flatMap { companies =>
+        db.run(Type.sortBy(_.typeid).result).map { types =>
+          Ok(views.html.event.edit(form, companies, types))
+        }
+      }
+    }
+  }
 
   /**
     * 登録実行
@@ -62,21 +94,40 @@ class EventController @Inject()(val dbConfigProvider: DatabaseConfigProvider,
   def remove(id: Long) = TODO
 }
 
-//object EventController {
-//  case class EventForm(
-//                        eventid: Option[Int],
-//                        companyid: Int,
-//                        typeid: Int,
-//                        description: Option[String],
-//                        opendate: Option[java.sql.Timestamp],
-//                        closeDate: Option[java.sql.Timestamp],
-//                        isclose: Option[Boolean]
-//                      )
-//
-//  val eventForm = Form(
-//    mapping(
-//      "eventid"       -> optional(longNumber),
-//      "companyid"          -> nonEmptyText()
-//    )(EventForm.apply)(EventForm.unapply)
-//  )
-//}
+object EventController {
+  // 便利ツール
+  // http://qiita.com/mather314/items/1d0e3bb2e94283f85e96
+  def dateTimeToSqlTimestamp: DateTime =>
+    Timestamp = { dt => new Timestamp(dt.getMillis) }
+  def sqlTimestampToDateTime: Timestamp =>
+    DateTime = { ts => new DateTime(ts.getTime) }
+
+  case class EventForm(
+                        eventid: Option[Int],
+                        companyid: Int,
+                        typeid: Int,
+                        description: Option[String],
+                        createdate: DateTime,
+                        duedate: DateTime,
+                        ready: Boolean,
+                        redume: Boolean,
+                        es: Boolean
+                      )
+
+  val eventForm = Form(
+    // 型がないのでjodaる
+    // ココらへんはplay.api.data.Formを熟読
+    // 上のEventFormと型を合わせる必要アリ
+    mapping(
+      "eventid"     -> optional(number),
+      "companyid"   -> of[Int],
+      "typeid"      -> of[Int],
+      "description" -> optional(text),
+      "createdate"  -> jodaDate("yyyy-mm-dd hh:mm:ss"),
+      "duedate"     -> jodaDate("yyyy-mm-dd hh:mm:ss"),
+      "ready"       -> of[Boolean],
+      "redume"      -> of[Boolean],
+      "es"          -> of[Boolean]
+    )(EventForm.apply)(EventForm.unapply)
+  )
+}

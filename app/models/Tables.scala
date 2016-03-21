@@ -24,28 +24,28 @@ trait Tables {
    *  @param etc Database column ETC SqlType(VARCHAR)
    *  @param upcomingeventid Database column UPCOMINGEVENTID SqlType(INTEGER)
    *  @param prayed Database column PRAYED SqlType(INTEGER) */
-  case class CompanyRow(companyid: Int, companyname: Option[String], etc: Option[String], upcomingeventid: Option[Int], prayed: Option[Int])
+  case class CompanyRow(companyid: Int, companyname: String, etc: Option[String], upcomingeventid: Int, prayed: Int)
   /** GetResult implicit for fetching CompanyRow objects using plain SQL queries */
-  implicit def GetResultCompanyRow(implicit e0: GR[Int], e1: GR[Option[String]], e2: GR[Option[Int]]): GR[CompanyRow] = GR{
+  implicit def GetResultCompanyRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]]): GR[CompanyRow] = GR{
     prs => import prs._
-    CompanyRow.tupled((<<[Int], <<?[String], <<?[String], <<?[Int], <<?[Int]))
+    CompanyRow.tupled((<<[Int], <<[String], <<?[String], <<[Int], <<[Int]))
   }
   /** Table description of table COMPANY. Objects of this class serve as prototypes for rows in queries. */
   class Company(_tableTag: Tag) extends Table[CompanyRow](_tableTag, "COMPANY") {
     def * = (companyid, companyname, etc, upcomingeventid, prayed) <> (CompanyRow.tupled, CompanyRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(companyid), companyname, etc, upcomingeventid, prayed).shaped.<>({r=>import r._; _1.map(_=> CompanyRow.tupled((_1.get, _2, _3, _4, _5)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(companyid), Rep.Some(companyname), etc, Rep.Some(upcomingeventid), Rep.Some(prayed)).shaped.<>({r=>import r._; _1.map(_=> CompanyRow.tupled((_1.get, _2.get, _3, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column COMPANYID SqlType(INTEGER), PrimaryKey */
     val companyid: Rep[Int] = column[Int]("COMPANYID", O.PrimaryKey)
     /** Database column COMPANYNAME SqlType(VARCHAR) */
-    val companyname: Rep[Option[String]] = column[Option[String]]("COMPANYNAME")
+    val companyname: Rep[String] = column[String]("COMPANYNAME")
     /** Database column ETC SqlType(VARCHAR) */
     val etc: Rep[Option[String]] = column[Option[String]]("ETC")
     /** Database column UPCOMINGEVENTID SqlType(INTEGER) */
-    val upcomingeventid: Rep[Option[Int]] = column[Option[Int]]("UPCOMINGEVENTID")
+    val upcomingeventid: Rep[Int] = column[Int]("UPCOMINGEVENTID")
     /** Database column PRAYED SqlType(INTEGER) */
-    val prayed: Rep[Option[Int]] = column[Option[Int]]("PRAYED")
+    val prayed: Rep[Int] = column[Int]("PRAYED")
   }
   /** Collection-like TableQuery object for table Company */
   lazy val Company = new TableQuery(tag => new Company(tag))
@@ -60,36 +60,36 @@ trait Tables {
    *  @param ready Database column READY SqlType(BOOLEAN)
    *  @param redume Database column REDUME SqlType(BOOLEAN)
    *  @param es Database column ES SqlType(BOOLEAN) */
-  case class EventRow(eventid: Int, companyid: Option[Int], typeid: Option[Int], description: Option[String], createdate: Option[java.sql.Timestamp], duedate: Option[java.sql.Timestamp], ready: Option[Boolean], redume: Option[Boolean], es: Option[Boolean])
+  case class EventRow(eventid: Int, companyid: Int, typeid: Int, description: Option[String], createdate: java.sql.Timestamp, duedate: java.sql.Timestamp, ready: Boolean, redume: Boolean, es: Boolean)
   /** GetResult implicit for fetching EventRow objects using plain SQL queries */
-  implicit def GetResultEventRow(implicit e0: GR[Int], e1: GR[Option[Int]], e2: GR[Option[String]], e3: GR[Option[java.sql.Timestamp]], e4: GR[Option[Boolean]]): GR[EventRow] = GR{
+  implicit def GetResultEventRow(implicit e0: GR[Int], e1: GR[Option[String]], e2: GR[java.sql.Timestamp], e3: GR[Boolean]): GR[EventRow] = GR{
     prs => import prs._
-    EventRow.tupled((<<[Int], <<?[Int], <<?[Int], <<?[String], <<?[java.sql.Timestamp], <<?[java.sql.Timestamp], <<?[Boolean], <<?[Boolean], <<?[Boolean]))
+    EventRow.tupled((<<[Int], <<[Int], <<[Int], <<?[String], <<[java.sql.Timestamp], <<[java.sql.Timestamp], <<[Boolean], <<[Boolean], <<[Boolean]))
   }
   /** Table description of table EVENT. Objects of this class serve as prototypes for rows in queries. */
   class Event(_tableTag: Tag) extends Table[EventRow](_tableTag, "EVENT") {
     def * = (eventid, companyid, typeid, description, createdate, duedate, ready, redume, es) <> (EventRow.tupled, EventRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(eventid), companyid, typeid, description, createdate, duedate, ready, redume, es).shaped.<>({r=>import r._; _1.map(_=> EventRow.tupled((_1.get, _2, _3, _4, _5, _6, _7, _8, _9)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(eventid), Rep.Some(companyid), Rep.Some(typeid), description, Rep.Some(createdate), Rep.Some(duedate), Rep.Some(ready), Rep.Some(redume), Rep.Some(es)).shaped.<>({r=>import r._; _1.map(_=> EventRow.tupled((_1.get, _2.get, _3.get, _4, _5.get, _6.get, _7.get, _8.get, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column EVENTID SqlType(INTEGER), PrimaryKey */
     val eventid: Rep[Int] = column[Int]("EVENTID", O.PrimaryKey)
     /** Database column COMPANYID SqlType(INTEGER) */
-    val companyid: Rep[Option[Int]] = column[Option[Int]]("COMPANYID")
+    val companyid: Rep[Int] = column[Int]("COMPANYID")
     /** Database column TYPEID SqlType(INTEGER) */
-    val typeid: Rep[Option[Int]] = column[Option[Int]]("TYPEID")
+    val typeid: Rep[Int] = column[Int]("TYPEID")
     /** Database column DESCRIPTION SqlType(VARCHAR) */
     val description: Rep[Option[String]] = column[Option[String]]("DESCRIPTION")
     /** Database column CREATEDATE SqlType(TIMESTAMP) */
-    val createdate: Rep[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("CREATEDATE")
+    val createdate: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("CREATEDATE")
     /** Database column DUEDATE SqlType(TIMESTAMP) */
-    val duedate: Rep[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("DUEDATE")
+    val duedate: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("DUEDATE")
     /** Database column READY SqlType(BOOLEAN) */
-    val ready: Rep[Option[Boolean]] = column[Option[Boolean]]("READY")
+    val ready: Rep[Boolean] = column[Boolean]("READY")
     /** Database column REDUME SqlType(BOOLEAN) */
-    val redume: Rep[Option[Boolean]] = column[Option[Boolean]]("REDUME")
+    val redume: Rep[Boolean] = column[Boolean]("REDUME")
     /** Database column ES SqlType(BOOLEAN) */
-    val es: Rep[Option[Boolean]] = column[Option[Boolean]]("ES")
+    val es: Rep[Boolean] = column[Boolean]("ES")
   }
   /** Collection-like TableQuery object for table Event */
   lazy val Event = new TableQuery(tag => new Event(tag))
@@ -97,20 +97,22 @@ trait Tables {
   /** Entity class storing rows of table Type
    *  @param typeid Database column TYPEID SqlType(INTEGER)
    *  @param typename Database column TYPENAME SqlType(VARCHAR) */
-  case class TypeRow(typeid: Option[Int], typename: Option[String])
+  case class TypeRow(typeid: Option[Int], typename: String)
   /** GetResult implicit for fetching TypeRow objects using plain SQL queries */
-  implicit def GetResultTypeRow(implicit e0: GR[Option[Int]], e1: GR[Option[String]]): GR[TypeRow] = GR{
+  implicit def GetResultTypeRow(implicit e0: GR[Option[Int]], e1: GR[String]): GR[TypeRow] = GR{
     prs => import prs._
-    TypeRow.tupled((<<?[Int], <<?[String]))
+    TypeRow.tupled((<<?[Int], <<[String]))
   }
   /** Table description of table TYPE. Objects of this class serve as prototypes for rows in queries. */
   class Type(_tableTag: Tag) extends Table[TypeRow](_tableTag, "TYPE") {
     def * = (typeid, typename) <> (TypeRow.tupled, TypeRow.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (typeid, Rep.Some(typename)).shaped.<>({r=>import r._; _2.map(_=> TypeRow.tupled((_1, _2.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column TYPEID SqlType(INTEGER) */
     val typeid: Rep[Option[Int]] = column[Option[Int]]("TYPEID")
     /** Database column TYPENAME SqlType(VARCHAR) */
-    val typename: Rep[Option[String]] = column[Option[String]]("TYPENAME")
+    val typename: Rep[String] = column[String]("TYPENAME")
   }
   /** Collection-like TableQuery object for table Type */
   lazy val Type = new TableQuery(tag => new Type(tag))

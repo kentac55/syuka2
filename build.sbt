@@ -9,6 +9,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(
+//  jdbcとslickを同時に有効化するとバグるらしい
 //  jdbc,
 //  cache,
 //  ws,
@@ -22,8 +23,13 @@ libraryDependencies ++= Seq(
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
 // Slick code generator
-slickCodeGen <<= slickCodeGenTask // register sbt command
-//(compile in Compile) <<= (compile in Compile) dependsOn slickCodeGenTask // register automatic code generation on compile
+// パクリ元
+// http://laughingman7743.hatenablog.com/entry/2015/07/11/144335
+// `sbt slickCodeGen` で勝手にmodels.Tablesにdbモデルを出力してくれる神
+slickCodeGen <<= slickCodeGenTask
+// コンパイル時に自動でmodels.Tablesを生成してくれる
+// リロードする度に起動するので基本コメントアウト
+//(compile in Compile) <<= (compile in Compile) dependsOn slickCodeGenTask
 lazy val config = ConfigFactory.parseFile(new File("./conf/application.conf"))
 lazy val slickCodeGen = taskKey[Seq[File]]("slick-codegen")
 lazy val slickCodeGenTask = (sourceManaged, dependencyClasspath in Compile, runner in Compile, streams) map { (dir, cp, r, s) =>
