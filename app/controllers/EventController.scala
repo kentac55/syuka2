@@ -127,8 +127,8 @@ object EventController {
       "companyid"   -> of[Int],
       "typeid"      -> of[Int],
       "description" -> optional(text),
-      "createdate"  -> jodaDate("yyyy-mm-dd hh:mm:ss"),
-      "duedate"     -> jodaDate("yyyy-mm-dd hh:mm:ss"),
+      "createdate"  -> jodaDate("yyyy-MM-dd hh:mm:ss"),
+      "duedate"     -> jodaDate("yyyy-MM-dd hh:mm:ss"),
       "ready"       -> of[Boolean],
       "redume"      -> of[Boolean],
       "es"          -> of[Boolean]
