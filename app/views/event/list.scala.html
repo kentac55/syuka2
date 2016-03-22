@@ -1,4 +1,8 @@
-@(events: Seq[models.Tables.EventRow])
+@(
+        events: Seq[models.Tables.EventRow],
+        companies: Seq[models.Tables.CompanyRow],
+        types: Seq[models.Tables.TypeRow]
+)
 
 @main("イベント一覧") {
     <div>
@@ -13,27 +17,36 @@
                     <th>会社名</th>
                     <th>種類</th>
                     <th>詳細</th>
-                    <th>due Date</th>
-                    <th>ready</th>
-                    <th>redume</th>
-                    <th>es</th>
+                    <th>期日</th>
+                    <th>準備</th>
+                    <th>レジュメ</th>
+                    <th>ES</th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
             @events.map { event =>
-                @* TODO - 謎のtdがちらほら出現してレイアウトが崩れるとかそういうレベルじゃないんだが*@
                 <tr>
-                    <td>@event.eventid</td>
-                    <td>@event.companyid</td>
-                    <td>@event.typeid</td>
-                    <td>@event.description<td>
+                    <td>
+                        <a href="@routes.EventController.edit(Some(event.eventid))">
+                            @event.eventid
+                        </a>
+                    </td>
+                    <td>
+                        @(companies.find(_.companyid == event.companyid)
+                        .map(_.companyname).getOrElse("unknown"))
+                    </td>
+                    <td>
+                        @(types.find(_.typeid == event.typeid)
+                        .map(_.typename).getOrElse("unknown"))
+                    </td>
+                    <td>@event.description</td>
                     <td>@event.duedate</td>
-                    <td>@event.ready<td>
-                    <td>@event.redume</td>
-                    <td>@event.es</td>
-                    <td>@helper.form(routes.EventController.edit(Some(event.eventid))){
-                        <input type="submit" class="btn btn-xs btn-primary" value="変更">
+                    <td>@(if(event.ready) "準備完了！" else "準備中！")</td>
+                    <td>@(if(event.redume) "必要" else "不要")</td>
+                    <td>@(if(event.es) "必要" else "不要")</td>
+                    <td>@helper.form(routes.EventController.remove(event.eventid)){
+                        <input type="submit" class="btn btn-xs btn-danger" value="削除">
                         }
                     </td>
                 </tr>

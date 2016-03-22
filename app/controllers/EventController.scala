@@ -32,8 +32,12 @@ class EventController @Inject()(val dbConfigProvider: DatabaseConfigProvider,
     * @return
     */
   def list = Action.async { implicit rs =>
-    db.run(Event.sortBy(t => t.eventid).result).map { events =>
-      Ok(views.html.event.list(events))
+    db.run(Event.sortBy(t => t.eventid).result).flatMap { events =>
+      db.run(Company.sortBy(_.companyid).result).flatMap { companies =>
+        db.run(Type.sortBy(_.typeid).result).map { types =>
+          Ok(views.html.event.list(events, companies, types))
+        }
+      }
     }
   }
 

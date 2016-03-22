@@ -97,20 +97,20 @@ trait Tables {
   /** Entity class storing rows of table Type
    *  @param typeid Database column TYPEID SqlType(INTEGER)
    *  @param typename Database column TYPENAME SqlType(VARCHAR) */
-  case class TypeRow(typeid: Option[Int], typename: String)
+  case class TypeRow(typeid: Int, typename: String)
   /** GetResult implicit for fetching TypeRow objects using plain SQL queries */
-  implicit def GetResultTypeRow(implicit e0: GR[Option[Int]], e1: GR[String]): GR[TypeRow] = GR{
+  implicit def GetResultTypeRow(implicit e0: GR[Int], e1: GR[String]): GR[TypeRow] = GR{
     prs => import prs._
-    TypeRow.tupled((<<?[Int], <<[String]))
+    TypeRow.tupled((<<[Int], <<[String]))
   }
   /** Table description of table TYPE. Objects of this class serve as prototypes for rows in queries. */
   class Type(_tableTag: Tag) extends Table[TypeRow](_tableTag, "TYPE") {
     def * = (typeid, typename) <> (TypeRow.tupled, TypeRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (typeid, Rep.Some(typename)).shaped.<>({r=>import r._; _2.map(_=> TypeRow.tupled((_1, _2.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(typeid), Rep.Some(typename)).shaped.<>({r=>import r._; _1.map(_=> TypeRow.tupled((_1.get, _2.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column TYPEID SqlType(INTEGER) */
-    val typeid: Rep[Option[Int]] = column[Option[Int]]("TYPEID")
+    val typeid: Rep[Int] = column[Int]("TYPEID")
     /** Database column TYPENAME SqlType(VARCHAR) */
     val typename: Rep[String] = column[String]("TYPENAME")
   }
