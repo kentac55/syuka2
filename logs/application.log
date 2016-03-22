@@ -113,3 +113,4 @@ play.sbt.PlayExceptions$CompilationException: Compilation error[Cannot perform o
 2016-03-21 16:25:21,979 [INFO] from application in application-akka.actor.default-dispatcher-6 - ApplicationTimer demo: Stopping application at 2016-03-21T07:25:21.978Z after 99s.
 2016-03-21 16:25:22,048 [INFO] from application in application-akka.actor.default-dispatcher-6 - ApplicationTimer demo: Starting application at 2016-03-21T07:25:22.048Z.
 2016-03-21 16:25:22,115 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-6 - Application started (Dev)
+2016-03-21 16:58:07,277 [INFO] from application in pool-4-thread-2 - ApplicationTimer demo: Stopping application at 2016-03-21T07:58:07.277Z after 1965s.
