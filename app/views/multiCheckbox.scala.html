@@ -1,1 +1,21 @@
-@()
+@*複数のチェックボックスを作るテンプレ*@
+@*https://nulab-inc.com/ja/blog/typetalk/subtle-hack-play-framework/*@
+
+@import helper._
+@(field:Field, options:Seq[(String, Any)], selected:Option[Seq[String]], args: (Symbol,Any)*)(implicit handler: FieldConstructor, messages: play.api.i18n.Messages)
+
+@import play.api.i18n.Messages.Implicits.applicationMessages
+
+@input(field, args:_*) { (id, name, value, htmlArgs) =>
+    @options.map { v =>
+        <div class="checkbox-row">
+            <input type="checkbox"
+            id="@(id)_@v._1"
+            name="@{name}[]"
+            value="@v._1"
+            @if(selected.getOrElse(Seq()).contains(v._1)){checked}
+            @toHtmlArgs(htmlArgs)>
+            <label for="@(id)_@v._1">@v._2</label>
+        </div>
+    }
+}
