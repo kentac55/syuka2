@@ -82,13 +82,67 @@ class EventController @Inject()(val dbConfigProvider: DatabaseConfigProvider,
     * 登録実行
     * @return
     */
-  def create = TODO
+  def create = Action.async { implicit rs =>
+    eventForm.bindFromRequest.fold(
+      error => {
+        println(error)  // TODO - delete
+        db.run(Company.sortBy(_.companyid).result).flatMap { companies =>
+          db.run(Type.sortBy(_.typeid).result).map { types =>
+            BadRequest(views.html.event.edit(error, companies, types))
+          }
+        }
+      },
+      form => {
+        val event = EventRow(
+          0, // 自動採番なのでなんでも良い
+          form.companyid,
+          form.typeid,
+          form.description,
+          dateTimeToSqlTimestamp(form.createdate),
+          dateTimeToSqlTimestamp(form.duedate),
+          form.ready,
+          form.redume,
+          form.es
+        )
+        db.run(Event += event).map { _ =>
+          Redirect(routes.EventController.list)
+        }
+      }
+    )
+  }
 
   /**
     * 更新実行
     * @return
     */
-  def update = TODO
+  def update = Action.async { implicit rs =>
+    eventForm.bindFromRequest.fold(
+      error => {
+        println(error)  // TODO - delete
+        db.run(Company.sortBy(_.companyid).result).flatMap { companies =>
+          db.run(Type.sortBy(_.typeid).result).map { types =>
+            BadRequest(views.html.event.edit(error, companies, types))
+          }
+        }
+      },
+      form => {
+        val event = EventRow(
+          form.eventid.get,
+          form.companyid,
+          form.typeid,
+          form.description,
+          dateTimeToSqlTimestamp(form.createdate),
+          dateTimeToSqlTimestamp(form.duedate),
+          form.ready,
+          form.redume,
+          form.es
+        )
+        db.run(Event.filter(t => t.eventid === event.eventid.bind).update(event)).map { _ =>
+          Redirect(routes.EventController.list)
+        }
+      }
+    )
+  }
 
   /**
     * 削除実行
@@ -127,8 +181,8 @@ object EventController {
       "companyid"   -> of[Int],
       "typeid"      -> of[Int],
       "description" -> optional(text),
-      "createdate"  -> jodaDate("yyyy-MM-dd hh:mm:ss"),
-      "duedate"     -> jodaDate("yyyy-MM-dd hh:mm:ss"),
+      "createdate"  -> jodaDate("yyyy-MM-dd HH:mm:ss"),
+      "duedate"     -> jodaDate("yyyy-MM-dd HH:mm:ss"),
       "ready"       -> of[Boolean],
       "redume"      -> of[Boolean],
       "es"          -> of[Boolean]
