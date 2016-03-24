@@ -4,6 +4,8 @@
         types: Seq[models.Tables.TypeRow]
 )
 
+@import tools._
+
 @main("イベント一覧") {
     <div>
         <a href="@routes.EventController.edit()" role="button" class="btn btn-success">新規作成</a>
@@ -41,7 +43,7 @@
                         .map(_.typename).getOrElse("unknown"))
                     </td>
                     <td>@event.description</td>
-                    <td>@event.duedate</td>
+                    <td>@jodaConverter.sqlTimestampToDateTime(event.duedate).toString("yyyy-MM-dd HH:mm:ss")</td>
                     <td>@(if(event.ready) "準備完了！" else "準備中！")</td>
                     <td>@(if(event.redume) "必要" else "不要")</td>
                     <td>@(if(event.es) "必要" else "不要")</td>
