@@ -15,9 +15,9 @@ import models.Tables._
 import javax.inject._
 import slick.driver.H2Driver.api._
 import org.joda.time.DateTime
-import java.sql.Timestamp
 import play.api.data.format.Formats._
 import scala.concurrent.Future
+import tools._
 
 import EventController._
 
@@ -25,7 +25,7 @@ import EventController._
 @Singleton()
 class EventController @Inject()(val dbConfigProvider: DatabaseConfigProvider,
                                  val messagesApi: MessagesApi) extends Controller
-  with HasDatabaseConfigProvider[JdbcProfile] with I18nSupport {
+  with HasDatabaseConfigProvider[JdbcProfile] with I18nSupport with jodaConverter {
 
   /**
     * 一覧表示
@@ -158,13 +158,6 @@ class EventController @Inject()(val dbConfigProvider: DatabaseConfigProvider,
 }
 
 object EventController {
-  // 便利ツール
-  // http://qiita.com/mather314/items/1d0e3bb2e94283f85e96
-  def dateTimeToSqlTimestamp: DateTime =>
-    Timestamp = { dt => new Timestamp(dt.getMillis) }
-  def sqlTimestampToDateTime: Timestamp =>
-    DateTime = { ts => new DateTime(ts.getTime) }
-
   case class EventForm(
                         eventid: Option[Int],
                         companyid: Int,
