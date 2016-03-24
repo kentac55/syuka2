@@ -51,7 +51,7 @@ trait Tables {
   lazy val Company = new TableQuery(tag => new Company(tag))
 
   /** Entity class storing rows of table Event
-   *  @param eventid Database column EVENTID SqlType(INTEGER), PrimaryKey
+   *  @param eventid Database column EVENTID SqlType(INTEGER), AutoInc, PrimaryKey
    *  @param companyid Database column COMPANYID SqlType(INTEGER)
    *  @param typeid Database column TYPEID SqlType(INTEGER)
    *  @param description Database column DESCRIPTION SqlType(VARCHAR)
@@ -72,8 +72,8 @@ trait Tables {
     /** Maps whole row to an option. Useful for outer joins. */
     def ? = (Rep.Some(eventid), Rep.Some(companyid), Rep.Some(typeid), description, Rep.Some(createdate), Rep.Some(duedate), Rep.Some(ready), Rep.Some(redume), Rep.Some(es)).shaped.<>({r=>import r._; _1.map(_=> EventRow.tupled((_1.get, _2.get, _3.get, _4, _5.get, _6.get, _7.get, _8.get, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
-    /** Database column EVENTID SqlType(INTEGER), PrimaryKey */
-    val eventid: Rep[Int] = column[Int]("EVENTID", O.PrimaryKey)
+    /** Database column EVENTID SqlType(INTEGER), AutoInc, PrimaryKey */
+    val eventid: Rep[Int] = column[Int]("EVENTID", O.AutoInc, O.PrimaryKey)
     /** Database column COMPANYID SqlType(INTEGER) */
     val companyid: Rep[Int] = column[Int]("COMPANYID")
     /** Database column TYPEID SqlType(INTEGER) */
