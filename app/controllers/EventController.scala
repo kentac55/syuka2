@@ -146,10 +146,15 @@ class EventController @Inject()(val dbConfigProvider: DatabaseConfigProvider,
 
   /**
     * 削除実行
-    * @param id
+    * @param eventID
     * @return
     */
-  def remove(id: Long) = TODO
+  def remove(eventID: Long) = Action.async { implicit rs =>
+    // _.eventidはint, eventIDはLong 型を揃える必要がある
+    db.run(Event.filter(t => t.eventid === eventID.toInt.bind).delete).map { _ =>
+      Redirect(routes.EventController.list)
+    }
+  }
 }
 
 object EventController {
