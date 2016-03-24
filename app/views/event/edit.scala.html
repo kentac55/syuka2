@@ -24,7 +24,8 @@
                         x => x.companyid.toString -> x.companyname
                     ),
                     '_label -> "会社名",
-                    '_default -> "--会社名を選択--"
+                    '_default -> "--会社名を選択--",
+                    '_showConstraints -> false
                 )
             </div>
             <div class="form-group">
@@ -34,7 +35,8 @@
                         x => x.typeid.toString -> x.typename
                     ),
                     '_label -> "種類",
-                    '_default -> "--イベントの種類を選択--"
+                    '_default -> "--イベントの種類を選択--",
+                    '_showConstraints -> false
                 )
             </div>
             <div class="form-group">
@@ -42,38 +44,49 @@
                     field = eventForm("description"),
                     args = 'rows -> 3, 'cols -> 50,
                     '_label -> "詳細",
-                    '_default -> "イベントの詳細について入力"
+                    '_default -> "イベントの詳細について入力",
+                    '_showConstraints -> false
                 )
             </div>
             <div class="form-group">
-                @helper.input(
+                @input(
                     eventForm("duedate"),
                     '_label -> "期日",
-                    '_default -> "2000-03-01 00:00:00"
+                    '_default -> "2000-03-01 00:00:00",
+                    '_help -> "入力例: 2016-03-15 15:00:00"
                 ) { (id, name, value, args) =>
                     <input type="datetime" name="@name" id="@id" value="@value" @toHtmlArgs(args)>
                 }
             </div>
             <div class="form-group">
-                @* TODO - 一つにまとめる方法*@
+                @* TODO - repeatとかネストとか使って纏める*@
                 @checkbox(
                     field = eventForm("redume"),
-                    '_text -> "履歴書",
-                    '_default -> false
+                    '_label -> "履歴書必要？",
+                    '_text -> "はい・・・",
+                    '_default -> false,
+                    '_showConstraints -> false
                 )
                 @checkbox(
                     field = eventForm("es"),
-                    '_text -> "ES",
-                    '_default -> false
+                    '_label -> "ES必要？",
+                    '_text -> "はい・・・",
+                    '_default -> false,
+                    '_showConstraints -> false
                 )
             </div>
             <div class="form-group">
                 @checkbox(
-                    field = eventForm("ready")
+                    field = eventForm("ready"),
+                    '_label -> "最終チェック",
+                    '_text -> "履歴書やらESやら書き終えた？",
+                    '_default -> false,
+                    '_showConstraints -> false
                 )
             </div>
+            <input type="hidden" name="createdate" value="@(eventForm("createdate").value.getOrElse(new org.joda.time.DateTime().toString("yyyy-MM-dd HH:mm:ss")))">
             @eventForm("eventid").value.map { value =>
-                <input type="hidden" name="eventID" value="@value" />
+                <input type="hidden" name="eventid" value="@value" />
             }
             <div>
                 <input type="submit" value="保存" class="btn btn-success">
